@@ -59,7 +59,7 @@ const shuffle = (arr) => {
 
   return shuffledArr;
 };
-
+// -----------END UTIL-----------
 // check for pairs
 const checkForPair = (prev, curr) => {
   if (prev.src === curr.src && prev.id !== curr.id) {
@@ -92,7 +92,13 @@ const resetFlipCounter = () => {
 
 const incrementScoreCounter = () => {
   const scoreCountDisplay = document.querySelector('#score-count');
-  scoreCounter += 10;
+  scoreCounter += 20;
+  scoreCountDisplay.innerText = scoreCounter;
+};
+
+const decrementScoreCounter = () => {
+  const scoreCountDisplay = document.querySelector('#score-count');
+  scoreCounter -= 5;
   scoreCountDisplay.innerText = scoreCounter;
 };
 
@@ -148,7 +154,7 @@ const checkGameOver = () => {
   }
 };
 
-// -----------END UTIL-----------
+
 
 // creating card with image inside
 const createCard = (img, id) => {
@@ -174,31 +180,35 @@ const createCard = (img, id) => {
 
 // onClick Flip
 const flip = (e) => {
-  const currCard = e.target.closest('.card');
-  const selectCurrImg = currCard.querySelector('.front img');
-  const src = selectCurrImg.getAttribute('src');
-  const id = selectCurrImg.getAttribute('id');
+    const currCard = e.target.closest('.card');
+    const selectCurrImg = currCard.querySelector('.front img');
+    const src = selectCurrImg.getAttribute('src');
+    const id = selectCurrImg.getAttribute('id');
 
-  cardQueue.push({ src, id });
-  currCard.classList.toggle('flipped');
+    cardQueue.push({ src, id });
+    currCard.classList.toggle('flipped');
 
-  incrementFlipCounter();
+    incrementFlipCounter();
 
-  if (cardQueue.length === 2) {
-    const currData = cardQueue.pop();
-    const prevData = cardQueue.pop();
-    const selectPrevImg = document.querySelector(`img[id="${prevData.id}"]`);
-    const prevCard = selectPrevImg.closest('.card');
+    if (cardQueue.length === 2) {
 
-    if (checkForPair(prevData, currData)) {
-      currCard.removeEventListener('click', flip);
-      prevCard.removeEventListener('click', flip);
-      incrementScoreCounter();
-    } else {
-      backToSkirts(prevCard, currCard);
+      const currData = cardQueue.pop();
+      const prevData = cardQueue.pop();
+      const selectPrevImg = document.querySelector(`img[id="${prevData.id}"]`);
+      const prevCard = selectPrevImg.closest('.card');
+
+      if (checkForPair(prevData, currData)) {
+        currCard.removeEventListener('click', flip);
+        prevCard.removeEventListener('click', flip);
+        incrementScoreCounter();
+      } else {
+        decrementScoreCounter();
+        backToSkirts(prevCard, currCard);
+      }
     }
-  }
-  checkGameOver(cardCount);
+    checkGameOver(cardCount);
+
+  // e.preventDefault();
 };
 
 // creating gameboard
